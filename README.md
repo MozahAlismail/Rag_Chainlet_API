@@ -95,38 +95,68 @@ chainlit run chainlet.py
 
 ## Deployment
 
-### Railway Deployment
+### Railway Deployment (Recommended)
 
-1. **Connect to Railway:**
+This project is optimized for Railway's free tier by using Hugging Face Inference API instead of loading large models locally.
+
+#### Setup Steps:
+
+1. **Get Hugging Face API Token (Recommended):**
+   - Go to [Hugging Face Settings](https://huggingface.co/settings/tokens)
+   - Create a new token with "Read" permissions
+   - Copy the token
+
+2. **Connect to Railway:**
    - Create account at [railway.app](https://railway.app)
    - Connect your GitHub repository
 
-2. **Automatic Deployment:**
-   - Railway will detect the `railway.yaml` configuration
-   - Deployment will start automatically
+3. **Set Environment Variable (Optional but Recommended):**
+   - In Railway dashboard, go to your project
+   - Add environment variable: `HUGGINGFACE_API_TOKEN` = `your_token_here`
+   - This enables lightweight deployment (free tier compatible)
 
-3. **Environment Variables:**
-   - No additional environment variables required
-   - Model caching is handled automatically
+4. **Deploy:**
+   - Railway will automatically deploy using `railway.yaml`
+   - With API token: ~500MB image (free tier)
+   - Without API token: ~6GB image (requires Pro plan)
 
-### Docker Deployment
+#### Deployment Options:
+- **With API Token**: Lightweight, fast, free tier compatible
+- **Without API Token**: Full local model, higher resource requirements
+
+### Alternative: Docker Deployment
 
 ```bash
+# Set your Hugging Face token
+export HUGGINGFACE_API_TOKEN=your_token_here
+
+# Build and run
 docker build -t rag-chainlit-api .
-docker run -p 8000:8000 rag-chainlit-api
+docker run -p 8000:8000 -e HUGGINGFACE_API_TOKEN=$HUGGINGFACE_API_TOKEN rag-chainlit-api
 ```
 
 ## Configuration
 
+### Optimization for Railway Deployment
+
+This project includes two implementations:
+
+1. **`rag.py`** - Original version with local Llama-2-7b model
+2. **`rag_optimized.py`** - Optimized version with flexible Llama-2-7b deployment
+
+The API automatically selects the appropriate version based on environment:
+- **With API Token**: Uses Hugging Face Inference API (lightweight deployment)
+- **Without API Token**: Loads Llama-2-7b locally (requires more resources)
+
 ### Model Configuration
-- **LLM**: meta-llama/Llama-2-7b-chat-hf
-- **Embeddings**: BAAI/bge-base-en-v1.5
+- **LLM**: meta-llama/Llama-2-7b-chat-hf (via API or local)
+- **Embeddings**: BAAI/bge-base-en-v1.5 (lightweight, runs locally)
 - **Vector DB**: ChromaDB with local persistence
 
 ### Resource Requirements
-- **Memory**: 4GB+ (for model loading)
-- **CPU**: 2+ cores recommended
-- **Storage**: 15GB+ (for model downloads)
+- **With API Token**: 2GB RAM, 1 CPU core (Railway free tier compatible)
+- **Without API Token**: 4GB+ RAM, 2 CPU cores (requires Railway Pro)
+- **Storage**: Variable (500MB with API, 6GB+ without API)
 
 ## Architecture
 

@@ -17,29 +17,22 @@ langchain-community
 chromadb
 
 # Embeddings and transformers
-transformers
 sentence-transformers
-torch
-torchvision
-torchaudio
+transformers
+tokenizers
+
+# PyTorch (for Llama-2-7b model)
+torch --index-url https://download.pytorch.org/whl/cpu
+accelerate
 
 # Hugging Face integrations
 huggingface-hub
-accelerate
-
-# Additional dependencies for model handling
-tokenizers
-safetensors
 
 # Async support
 nest-asyncio
 
 # Data processing
 numpy
-pandas
 
-# Optional: For better performance
-bitsandbytes
-
-# Development dependencies (optional)
+# Development dependencies
 python-multipart

@@ -2,17 +2,21 @@ build:
   - python -m pip install --upgrade pip
   - pip install -r requirements.txt
 
+# start:
+#   - uvicorn api:app --host 0.0.0.0 --port $PORT
+
+# Alternative: To run both API and Chainlit in same deployment, uncomment below:
 start:
-  - uvicorn api:app --host 0.0.0.0 --port $PORT
+ - uvicorn api:app --host 0.0.0.0 --port $PORT & chainlit run chainlet.py --port 8001 --host 0.0.0.0
 
 env:
   PYTHON_VERSION: "3.9"
   
 variables:
   PORT: 8000
-  HUGGINGFACE_HUB_CACHE: "/tmp/huggingface"
+  RAILWAY_ENVIRONMENT: "production"
   TRANSFORMERS_CACHE: "/tmp/transformers"
-  TORCH_HOME: "/tmp/torch"
+  HF_HOME: "/tmp/huggingface"
   
 nixpacks:
   phases:
@@ -20,15 +24,12 @@ nixpacks:
       nixPkgs:
         - python39
         - gcc
-        - g++
-        - cmake
         - pkg-config
     build:
       cmds:
         - python -m pip install --upgrade pip
         - pip install -r requirements.txt
-        - python -c "import torch; print(f'PyTorch version: {torch.__version__}')"
-        - python -c "import transformers; print(f'Transformers version: {transformers.__version__}')"
+        - python -c "import sentence_transformers; print('Dependencies installed successfully')"
     start:
       cmd: uvicorn api:app --host 0.0.0.0 --port $PORT
 
@@ -42,4 +43,3 @@ cpu: 2000m
 volumes:
   - /tmp/huggingface
   - /tmp/transformers
-  - /tmp/torch

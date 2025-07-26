@@ -1,34 +1,33 @@
-# Use Python 3.9 slim image
+# Use Python 3.9 slim image for smaller size
 FROM python:3.9-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
+# Install minimal system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
-    g++ \
-    cmake \
     pkg-config \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
 
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install Python dependencies
+# Install Python dependencies with optimizations
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
 
-# Create directories for model caching
-RUN mkdir -p /tmp/huggingface /tmp/transformers /tmp/torch
+# Create directories for caching
+RUN mkdir -p /tmp/huggingface /tmp/transformers
 
 # Set environment variables
-ENV HUGGINGFACE_HUB_CACHE=/tmp/huggingface
+ENV HF_HOME=/tmp/huggingface
 ENV TRANSFORMERS_CACHE=/tmp/transformers
-ENV TORCH_HOME=/tmp/torch
+ENV RAILWAY_ENVIRONMENT=production
 ENV PORT=8000
 
 # Expose port
