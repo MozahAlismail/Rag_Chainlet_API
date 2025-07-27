@@ -49,7 +49,7 @@ def initialize_llm():
     print("🔄 Loading Llama-2-7b model...")
     print("⚠️  This may take several minutes on first run...")
     
-    model_name = "mistralai/Mistral-7B-Instruct-v0.1" # meta-llama/Llama-2-7b-chat-hf
+    model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0" # meta-llama/Llama-2-7b-chat-hf
     
     try:
         tokenizer = AutoTokenizer.from_pretrained(model_name)
