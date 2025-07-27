@@ -36,3 +36,5 @@ numpy
 
 # Development dependencies
 python-multipart
+pydantic
+requests

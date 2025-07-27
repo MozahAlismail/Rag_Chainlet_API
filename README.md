@@ -50,7 +50,7 @@ conda env create -f environment.yml
 
 3. Activate the environment:
 ```bash
-conda activate rag_chainlit_env
+conda activate NLPenv
 ```
 
 ### Running the Application
@@ -62,7 +62,7 @@ conda activate rag_chainlit_env
 #### Option 2: Manual startup
 1. **Activate conda environment:**
 ```bash
-conda activate rag_chainlit_env
+conda activate NLPenv
 ```
 
 2. **Start the FastAPI server:**
@@ -72,7 +72,7 @@ uvicorn api:app --reload --host 0.0.0.0 --port 8000
 
 3. **In another terminal, start Chainlit:**
 ```bash
-conda activate rag_chainlit_env
+conda activate NLPenv
 chainlit run chainlet.py
 ```
 
