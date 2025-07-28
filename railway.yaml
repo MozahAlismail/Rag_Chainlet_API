@@ -5,9 +5,9 @@ build:
 # start:
 #   - uvicorn api:app --host 0.0.0.0 --port $PORT
 
-# Alternative: To run both API and Chainlit in same deployment, uncomment below:
+# Main application start - Chainlit manages both frontend and API
 start:
- - uvicorn api:app --host 0.0.0.0 --port $PORT & chainlit run chainlet.py --port 8001 --host 0.0.0.0
+ - chainlit run chainlet.py --port $PORT --host 0.0.0.0
 
 env:
   PYTHON_VERSION: "3.9"
@@ -17,6 +17,7 @@ variables:
   RAILWAY_ENVIRONMENT: "production"
   TRANSFORMERS_CACHE: "/tmp/transformers"
   HF_HOME: "/tmp/huggingface"
+  FASTAPI_URL: "http://0.0.0.0:8000/chat"
   
 nixpacks:
   phases:
