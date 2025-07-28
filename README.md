@@ -14,7 +14,7 @@ A Retrieval-Augmented Generation (RAG) chatbot API built with FastAPI and Chainl
 
 ```
 ├── api.py              # FastAPI server with chat endpoint
-├── chainlet.py         # Chainlit chat interface
+├── main.py            # Main application entry point (Chainlit + API management)
 ├── rag.py             # RAG implementation with LangChain
 ├── chroma_db/         # Vector database (ChromaDB)
 ├── requirements.txt   # Python dependencies (for Railway deployment)
@@ -73,7 +73,7 @@ uvicorn api:app --reload --host 0.0.0.0 --port 8000
 3. **In another terminal, start Chainlit:**
 ```bash
 conda activate NLPenv
-chainlit run chainlet.py
+chainlit run main.py
 ```
 
 3. **Access the application:**
@@ -164,7 +164,7 @@ The application consists of three main components:
 
 1. **FastAPI Server** (`api.py`): Handles HTTP requests and responses
 2. **RAG Engine** (`rag.py`): Processes queries using retrieval and generation
-3. **Chainlit Interface** (`chainlet.py`): Provides user-friendly chat interface
+3. **Main Interface** (`main.py`): Provides integrated chat interface and API management
 
 ## Troubleshooting
 

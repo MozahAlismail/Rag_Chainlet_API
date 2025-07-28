@@ -5,9 +5,9 @@ build:
 # start:
 #   - uvicorn api:app --host 0.0.0.0 --port $PORT
 
-# Main application start - Chainlit manages both frontend and API
+# Main application start - Main.py manages both frontend and API
 start:
- - chainlit run chainlet.py --port $PORT --host 0.0.0.0
+ - chainlit run main.py --port $PORT --host 0.0.0.0
 
 env:
   PYTHON_VERSION: "3.9"

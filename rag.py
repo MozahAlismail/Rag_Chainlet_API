@@ -46,17 +46,23 @@ def initialize_vectorstore():
 def initialize_llm():
     """Initialize the Language Model"""
     global llm
-    print("🔄 Loading Llama-2-7b model...")
+    print("🔄 Loading language model...")
     print("⚠️  This may take several minutes on first run...")
     
-    model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0" # meta-llama/Llama-2-7b-chat-hf
+    # Use TinyLlama for faster testing, can be changed to Llama-2-7b later
+    model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"  # Alternative: "meta-llama/Llama-2-7b-chat-hf"
+    print(f"📦 Using model: {model_name}")
     
     try:
         tokenizer = AutoTokenizer.from_pretrained(model_name)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+            
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
             torch_dtype=torch.float16,
-            device_map="auto"
+            device_map="auto",
+            trust_remote_code=True
         )
         
         pipe = pipeline(
@@ -65,15 +71,18 @@ def initialize_llm():
             tokenizer=tokenizer,
             max_new_tokens=512,
             do_sample=True,
-            temperature=0.3,
+            temperature=0.7,  # Increased for more creative responses
+            repetition_penalty=1.1,  # Reduce repetition
+            pad_token_id=tokenizer.eos_token_id
         )
         
         llm = HuggingFacePipeline(pipeline=pipe)
-        print("✅ Llama-2-7b model loaded successfully")
+        print(f"✅ Language model loaded successfully")
         return llm
         
     except Exception as e:
         print(f"❌ Error loading model: {e}")
+        print(f"🔍 Error details: {type(e).__name__}: {str(e)}")
         raise
 
 def create_rag_chain():
@@ -147,13 +156,27 @@ def rag_chat(user_message: str) -> str:
             return "❌ Error: RAG system not initialized. Please restart the server."
         
         print(f"🔍 Processing question: {user_message}")
+        print(f"📊 RAG chain initialized: {rag_chain is not None}")
+        print(f"📊 Retriever initialized: {retriever is not None}")
+        print(f"📊 LLM initialized: {llm is not None}")
+        
+        # Invoke the RAG chain
+        print("🔄 Invoking RAG chain...")
         response = rag_chain.invoke(input=user_message)
+        
         print(f"✅ Response generated successfully")
+        print(f"📏 Response length: {len(response) if response else 0} characters")
+        print(f"🔍 Response preview: {response[:100] if response else 'None'}...")
+        
+        if not response or response.strip() == "":
+            return "I apologize, but I couldn't generate a response to your question. Please try rephrasing your question or try again."
         
         return response
         
     except Exception as e:
         print(f"❌ Error in rag_chat: {e}")
+        print(f"🔍 Error type: {type(e).__name__}")
+        print(f"📊 Stack trace: {str(e)}")
         return f"I apologize, but I encountered an error while processing your request: {str(e)}"
 
 def test_rag_system():
