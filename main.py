@@ -11,13 +11,25 @@ from multiprocessing import Process
 import signal
 import atexit
 
+# Set your Hugging Face token directly here (REPLACE WITH YOUR ACTUAL TOKEN)
+from huggingface_hub import login
+os.environ["HUGGINGFACE_API_TOKEN"] = "Token_Here"
+login(token=os.environ["HUGGINGFACE_API_TOKEN"])
+
 # Configuration - Dynamic based on environment
 def get_environment_config():
     """Get configuration based on deployment environment"""
     is_railway = os.getenv("RAILWAY_ENVIRONMENT") is not None
     is_production = os.getenv("HUGGINGFACE_API_TOKEN") is not None or is_railway
     
-    if is_railway:
+    # Local development
+    host = "127.0.0.1"
+    api_port = 8000
+    chainlit_port = 8001
+    api_url = os.getenv("FASTAPI_URL", f"http://localhost:{api_port}/chat")
+    return host, api_port, chainlit_port, api_url, "Development"
+    
+    '''if is_railway:
         # Railway deployment
         host = "0.0.0.0"
         port = int(os.getenv("PORT", 8000))
@@ -37,7 +49,7 @@ def get_environment_config():
         api_port = 8000
         chainlit_port = 8001
         api_url = os.getenv("FASTAPI_URL", f"http://localhost:{api_port}/chat")
-        return host, api_port, chainlit_port, api_url, "Development"
+        return host, api_port, chainlit_port, api_url, "Development"'''
 
 # Get dynamic configuration
 FASTAPI_HOST, FASTAPI_PORT, CHAINLIT_PORT, FASTAPI_URL, ENVIRONMENT_TYPE = get_environment_config()

@@ -6,6 +6,11 @@ from langchain_community.llms import HuggingFaceEndpoint
 from langchain.vectorstores import Chroma
 from langchain.embeddings import HuggingFaceEmbeddings
 
+# Set your Hugging Face token directly here (REPLACE WITH YOUR ACTUAL TOKEN)
+from huggingface_hub import login
+os.environ["HUGGINGFACE_API_TOKEN"] = "Token_Here"
+login(token=os.environ["HUGGINGFACE_API_TOKEN"])
+
 # Initialize embeddings (lightweight model)
 embedding_model = HuggingFaceEmbeddings(model_name="BAAI/bge-base-en-v1.5")
 

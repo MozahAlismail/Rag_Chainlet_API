@@ -5,6 +5,11 @@ import nest_asyncio
 import os
 import traceback
 
+# Set your Hugging Face token directly here (REPLACE WITH YOUR ACTUAL TOKEN)
+from huggingface_hub import login
+os.environ["HUGGINGFACE_API_TOKEN"] = "Token_Here"
+login(token=os.environ["HUGGINGFACE_API_TOKEN"])
+
 # Define request model for better validation
 class ChatRequest(BaseModel):
     question: str
@@ -21,7 +26,15 @@ def initialize_rag():
         return True
     
     try:
-        # Use optimized RAG for production, fallback to original for development
+        
+        print("Loading original RAG implementation...")
+        from rag import rag_chat, initialize_rag_system
+        print("✅ Original RAG loaded successfully")
+        
+        # Initialize the system
+        initialize_rag_system()
+        
+        '''# Use optimized RAG for production, fallback to original for development
         if os.getenv("RAILWAY_ENVIRONMENT") or os.getenv("HUGGINGFACE_API_TOKEN"):
             print("Loading optimized RAG implementation...")
             from rag_optimized import rag_chat, initialize_rag_system
@@ -36,7 +49,7 @@ def initialize_rag():
             print("✅ Original RAG loaded successfully")
             
             # Initialize the system
-            initialize_rag_system()
+            initialize_rag_system()'''
             
         rag_initialized = True
         return True
